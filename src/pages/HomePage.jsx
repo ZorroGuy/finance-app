@@ -23,6 +23,7 @@ import {
   Nav,
   Dropdown,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const months = [
   "Jan",
@@ -48,6 +49,7 @@ const HomePage = () => {
   const [expenseLimit, setExpenseLimit] = useState("");
   const [data, setData] = useState([]);
   const [warning, setWarning] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("financeData")) || [];
@@ -78,8 +80,6 @@ const HomePage = () => {
     const newData = [...data, newEntry];
     setData(newData);
     localStorage.setItem("financeData", JSON.stringify(newData));
-
-    // Reset form after submit
     setSalary("");
     setExpenses({ rent: "", food: "", other: "" });
     setExpenseLimit("");
@@ -89,6 +89,11 @@ const HomePage = () => {
     const updatedData = data.filter((_, index) => index !== indexToRemove);
     setData(updatedData);
     localStorage.setItem("financeData", JSON.stringify(updatedData));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
   };
 
   const filteredData = data.filter((item) => item.month === month);
@@ -107,7 +112,7 @@ const HomePage = () => {
                 <Dropdown.Toggle variant="secondary">Profile</Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item href="#">Settings</Dropdown.Item>
-                  <Dropdown.Item href="#">Logout</Dropdown.Item>
+                  <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>

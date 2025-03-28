@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Slider1 from "../assets/images/Business Plan-pana.png";
 import Slider2 from "../assets/images/Investment data-amico.png";
 import Slider3 from "../assets/images/Team goals-rafiki.png";
+import CryptoJS from "crypto-js";
 
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +17,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
+  const SECRET_KEY = "my-secret-key";
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -38,18 +40,20 @@ const LoginPage = () => {
 
     setErrors(newErrors);
     if (newErrors.email || newErrors.password) return;
+    const token = "user-auth-token";
+    const encryptedToken = CryptoJS.AES.encrypt(token, SECRET_KEY).toString();
 
     setLoading(true);
     setTimeout(() => {
       console.log("User Data:", formData);
       setLoading(false);
-      navgator("/");
+      localStorage.setItem("authToken", encryptedToken);
+      navgator("/", { replace: true });
     }, 2000);
   };
 
   return (
     <div className="container-fluid vh-100 d-flex p-0">
-      {/* Left Side (Slider) */}
       <div className="d-none d-md-flex col-md-6 bg-primary text-white flex-column justify-content-center align-items-center p-5 position-relative">
         <div className="slider-container position-relative w-100">
           <img
@@ -141,8 +145,6 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Additional CSS */}
       <style>
         {`
           .dot {
